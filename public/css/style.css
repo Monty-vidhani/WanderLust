@@ -2,7 +2,8 @@ body{
     background-color: aquamarine;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    /* height: 100vh; */
+    justify-content: space-between;
 }
 .container{
     flex: 1;
@@ -11,6 +12,7 @@ body{
 .navbar{
     height: 4.5rem;
     background-color: white;
+    
 }
 
 .fa-compass{
@@ -92,4 +94,13 @@ a{
     /* text-align: center; */
     background-color: #fe424d !important;
     border: none !important;
+}
+.btn-success{
+    background-color: green !important;
+}
+
+footer{
+    background-color: rgb(117, 116, 116) !important;
+    border: 1px solid black  !important;
+
 }
