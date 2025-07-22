@@ -8,7 +8,9 @@ const ejsMate = require("ejs-mate") ;
 const passport  = require("passport");
 const localStrategy = require("passport-local") ;
 const User = require("./models/user.js") ;
+const session = require("express-session") ;
 require("dotenv").config();
+
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views")) ;
@@ -16,7 +18,49 @@ app.use(express.urlencoded({extended:true})) ;
 app.use(methodOverride("_method")) ;
 app.engine('ejs', ejsMate) ;
 app.use(express.static(path.join(__dirname,"/public")));
+const sessionOptions  = {
+    secret:"mysupersecretstring",
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+        expires:Date.now() + 7*24*60*60*1000 ,
+        maxAge: 7*24*60*60*1000 ,
+        httpOnly: true,
+    }
+} ; 
+app.use(session(sessionOptions)) ;
+// app.use(flash()) ;
+app.use(passport.initialize()) ;
+app.use(passport.session()) ;
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser()) ;
+passport.deserializeUser(User.deserializeUser()) ;
+// app.use((req,re,next)=>{
+//     res.local.success = req.flash("success") ;
+//     next() ;
+// })
 
+// app.get("/demouser", async(req,res)=>{
+//     let fakeUser = new User({
+//         email: "student@gmail.com",
+//         username:"aplha-student"
+//     }) ;
+
+//   let registereduser = await  User.register(fakeUser,"helloworld") ;
+//   res.send(registereduser) ;
+// })
+
+app.get("/signup",(req,res)=>{
+    res.render("./signup/signup.ejs") ;
+})
+
+app.post("/signup",async (req,res)=>{
+        let{username,email,password} = req.body ;
+        const newUser = new  User({email,username}) ;
+        let registeredUser = await User.register(newUser,password) ;
+        // console.log(registeredUser) ;
+        res.redirect("/listings") ;
+})
 
 main().then(()=>{
     console.log("connected to database");
@@ -105,6 +149,7 @@ app.get("/",(req,res)=>{
 app.use((err,req,res,next)=>{
     res.send("something went wrong") ;
 })
+
 app.listen(8080,()=>{
     console.log("listening to port 8080");
 })
