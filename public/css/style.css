@@ -101,6 +101,6 @@ a{
 
 footer{
     background-color: rgb(117, 116, 116) !important;
-    border: 1px solid black  !important;
+    /* border: 1px solid black  !important; */
 
 }
